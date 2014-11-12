@@ -15,7 +15,7 @@ public class PGPProcessor {
 	private InputStream publicKeyIn;
 	private InputStream secretKeyIn;
 	
-	private boolean asciiArmored = false;
+	private boolean asciiArmored = true;
 	private boolean integrityCheck = true;
 	
 	public PGPProcessor() {
