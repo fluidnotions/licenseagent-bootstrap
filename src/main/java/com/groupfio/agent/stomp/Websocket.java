@@ -36,8 +36,6 @@ public class Websocket {
 
 	}
 
-	
-
 	public boolean awaitClose(int duration, TimeUnit unit)
 			throws InterruptedException {
 		return this.closeLatch.await(duration, unit);
@@ -114,15 +112,6 @@ public class Websocket {
 				logger.error(f.getBody());
 			}
 		}
-		// sendTestMessage(c++);
-
-	}
-
-	int c = 1;
-
-	public void sendTestMessage(int c) {
-		stompHandler.send(null, null, "{\"name\":\"msg number" + c + "\"}", 15);
-
 	}
 
 	public void subscribe(String dest) {

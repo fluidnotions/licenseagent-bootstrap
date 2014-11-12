@@ -8,18 +8,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-/**
- * Transform a message received from network in an object manageable by java and
- * for get back some information in this message. Make also the reverse :
- * transform an object manageable by java in a message manageable by the
- * network.
- * 
- * @version 1.0.0
- * @author Emeric Perrin
- * 
- */
+import com.groupfio.pgp.PGPProcessor;
+
 public class Frame {
-	// private final static String CONTENT_LENGTH = "content-length";
+
 
 	private String command;
 	private Map<String, String> headers;
@@ -113,80 +105,8 @@ public class Frame {
 				}
 			}
 		}
-
-		// int divider = data.indexOf(Byte.LF + Byte.LF);
-		//
-		// String[] headerLines = new String[0];
-		// String command = "";
-		// if(divider != -1){
-		// String[] headerLines_ = data.substring(0, divider).split(Byte.LF);
-		// command = headerLines_[0];
-		// headerLines = new String[headerLines_.length - 1];
-		// for(int i = 0; i < headerLines_.length - 1; i++){
-		// headerLines[i] = headerLines_[i+1];
-		// }
-		// }
-		//
-		// String[] ref = new String[headerLines.length];
-		// for(int i = headerLines.length-1, j = 0 ; i >= 0; i--, j++){
-		// ref[j] = headerLines[i];
-		// }
-		// String line;
-		// int idx;
-		// Map<String, String> headers = new HashMap<String, String>();
-		// for (int i = 0, len = ref.length; i < len; i++) {
-		// line = ref[i];
-		// idx = line.indexOf(':');
-		// headers.put(line.substring(0, idx).trim(), line.substring(idx +
-		// 1).trim());
-		// }
-		// String body = "";
-		// int start = divider + 2;
-		//
-		// if(headers.containsKey(CONTENT_LENGTH)){
-		// int len = Integer.parseInt(headers.get(CONTENT_LENGTH));
-		// body = data.substring(start, start + len);
-		// } else {
-		// String chr = null;
-		// for (int i = start ,j = start, ref1 = data.length();
-		// start <= ref1 ? j < ref1 : j > ref1; i = start <= ref1 ? ++j : --j) {
-		// chr = String.valueOf(data.charAt(i));
-		// if (chr == Byte.NULL) {
-		// break;
-		// }
-		// body += chr;
-		// }
-		// }
 		return new Frame(command, headers, body);
 	}
-
-	// No need this method, a single frame will be always be send because body
-	// of the message will never be excessive
-	// /**
-	// * Transform a message received from server in a Set of objects, named
-	// frame, manageable by java
-	// *
-	// * @param datas
-	// * message received from network
-	// * @return
-	// * a Set of Frame
-	// */
-	// public static Set<Frame> unmarshall(String datas){
-	// String data;
-	// String[] ref = datas.split(Byte.NULL + Byte.LF + "*");//NEED TO VERIFY
-	// THIS PARAMETER
-	// Set<Frame> results = new HashSet<Frame>();
-	//
-	// for (int i = 0, len = ref.length; i < len; i++) {
-	// data = ref[i];
-	//
-	// if ((data != null ? data.length() : 0) > 0){
-	// results.add(unmarshallSingle(data));//"unmarshallSingle" is the old name
-	// method for "fromString"
-	// }
-	// }
-	// return results;
-	// }
 
 	/**
 	 * Create a frame with based fame component and convert them into a string
@@ -199,8 +119,18 @@ public class Frame {
 	 */
 	public static String marshall(String command, Map<String, String> headers,
 			String body) {
+		return marshall( command, headers,
+				 body, false);
+	}
+	
+	public static String marshall(String command, Map<String, String> headers,
+			String body, boolean encrypt){
 		Frame frame = new Frame(command, headers, body);
-		return frame.toStringg();
+		String frameString = frame.toStringg();
+		if(encrypt){
+			frameString = new String(PGPProcessor.encryptByteArray(frameString.getBytes()));
+		}
+		return frameString;
 	}
 
 	private class Byte {

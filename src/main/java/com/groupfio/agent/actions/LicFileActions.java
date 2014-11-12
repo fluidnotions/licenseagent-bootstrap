@@ -47,13 +47,8 @@ public class LicFileActions extends Action {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			logger.debug("licfile as json string: " + licfilejson);
-			//PGP enrypt
-			String encyptedLicFileJson = new String(PGPProcessor.encryptByteArray(licfilejson.getBytes()));
-
-			if(encyptedLicFileJson!=null)logger.debug("pgp encrypted licfile as json string: " + encyptedLicFileJson);
 			
-			super.getStompHandler().send(null, null, (encyptedLicFileJson!=null? encyptedLicFileJson:licfilejson), 15);
+			super.getStompHandler().send(null, null, licfilejson, 15, true);
 		} else {
 			logger.error("Web Socket Session Closed - dropping operation run.");
 		}
