@@ -12,7 +12,7 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 
 import com.groupfio.agent.ValidationState;
-import com.groupfio.licenseagent.config.Config;
+import com.groupfio.agent.config.Config;
 
 public class ShutdownTransformer extends Transformer {
 	

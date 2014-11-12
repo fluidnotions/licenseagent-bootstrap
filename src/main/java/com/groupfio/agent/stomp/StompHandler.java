@@ -1,4 +1,4 @@
-package com.groupfio.licenseagent.stomp;
+package com.groupfio.agent.stomp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 
-import com.groupfio.licenseagent.config.Config;
+import com.groupfio.agent.config.Config;
 
 public class StompHandler {
 
@@ -39,14 +39,14 @@ public class StompHandler {
 				&& !headers.containsKey(StompHandler.CONTENT_LENGTH_NAME)) {
 			String bodylen = (new Integer(body.length())).toString();
 			headers.put(StompHandler.CONTENT_LENGTH_NAME, bodylen);
-			logger.info(StompHandler.CONTENT_LENGTH_NAME + " of " + bodylen
+			logger.debug(StompHandler.CONTENT_LENGTH_NAME + " of " + bodylen
 					+ " added to headers");
 		}
 		try {
 			Future<Void> fut = this.websocketSession.getRemote()
 					.sendStringByFuture(out);
 			fut.get(secdelay, TimeUnit.SECONDS);
-			logger.info(out);
+			logger.debug(out);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {

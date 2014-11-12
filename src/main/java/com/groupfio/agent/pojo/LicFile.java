@@ -1,4 +1,4 @@
-package com.groupfio.licenseagent.pojo;
+package com.groupfio.agent.pojo;
 
 public class LicFile {
 

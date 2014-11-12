@@ -1,4 +1,4 @@
-package com.groupfio.licenseagent.pojo;
+package com.groupfio.agent.pojo;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 

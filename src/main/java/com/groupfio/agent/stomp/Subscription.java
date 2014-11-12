@@ -1,4 +1,4 @@
-package com.groupfio.licenseagent.stomp;
+package com.groupfio.agent.stomp;
 
 public class Subscription {
 

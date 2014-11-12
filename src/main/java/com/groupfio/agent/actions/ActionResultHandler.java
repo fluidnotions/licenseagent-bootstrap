@@ -1,10 +1,10 @@
-package com.groupfio.licenseagent.actions;
+package com.groupfio.agent.actions;
 
 import org.apache.log4j.Logger;
 
 import com.groupfio.agent.ValidationState;
-import com.groupfio.licenseagent.pojo.ActionResult;
-import com.groupfio.licenseagent.pojo.LicFile;
+import com.groupfio.agent.pojo.ActionResult;
+import com.groupfio.agent.pojo.LicFile;
 
 public class ActionResultHandler {
 
@@ -17,11 +17,11 @@ public class ActionResultHandler {
 
 	public void handleResponse(ActionResult actionResult) {
 		//toString only prints obj ref for some reason
-		//logger.info("inside handleResponse with actionResult: "+actionResult.toString());
-		logger.info("inside handleResponse with actionResult.getAction().trim(): "+actionResult.getAction().trim());
+		//logger.debug("inside handleResponse with actionResult: "+actionResult.toString());
+		logger.debug("inside handleResponse with actionResult.getAction().trim(): "+actionResult.getAction().trim());
 		switch (actionResult.getAction().trim()) {
 		case "ChecksumAndFileSize":
-			logger.info("ChecksumAndFileSize action result: "
+			logger.debug("ChecksumAndFileSize action result: "
 					+ actionResult.getActionResultMsg());
 			if(LicFile.VPASS.equals(actionResult.getActionResultMsg())){
 				validation.setShouldShutdown(false);

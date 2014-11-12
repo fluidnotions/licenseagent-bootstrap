@@ -1,4 +1,4 @@
-package com.groupfio.licenseagent.config;
+package com.groupfio.agent.config;
 
 import java.io.IOException;
 import java.io.InputStream;

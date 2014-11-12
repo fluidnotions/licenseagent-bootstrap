@@ -1,7 +1,7 @@
-package com.groupfio.licenseagent.actions;
+package com.groupfio.agent.actions;
 
-import com.groupfio.licenseagent.stomp.StompHandler;
-import com.groupfio.licenseagent.stomp.Websocket;
+import com.groupfio.agent.stomp.StompHandler;
+import com.groupfio.agent.stomp.Websocket;
 
 public abstract class Action implements Runnable {
 

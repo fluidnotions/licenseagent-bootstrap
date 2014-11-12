@@ -1,4 +1,4 @@
-package com.groupfio.licenseagent.actions;
+package com.groupfio.agent.actions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,11 +12,11 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.groupfio.licenseagent.config.Config;
-import com.groupfio.licenseagent.pojo.LicFile;
-import com.groupfio.licenseagent.pojo.LicFile.LicFileAction;
-import com.groupfio.licenseagent.stomp.Websocket;
-import com.groupfio.pgp.PGPEncrypt;
+import com.groupfio.agent.config.Config;
+import com.groupfio.agent.pojo.LicFile;
+import com.groupfio.agent.pojo.LicFile.LicFileAction;
+import com.groupfio.agent.stomp.Websocket;
+import com.groupfio.pgp.PGPProcessor;
 
 public class LicFileActions extends Action {
 
@@ -28,7 +28,7 @@ public class LicFileActions extends Action {
 
 	public void run() {
 		if (super.isWebSocketSessionOpen()) {
-			logger.info("LicFileActions running at " + (new Date().toString()));
+			logger.debug("LicFileActions running at " + (new Date().toString()));
 			// send Test LicFile Object Message
 			LicFile lf = new LicFile();
 			lf.setAction(LicFileAction.ChecksumAndFileSize);
@@ -47,19 +47,12 @@ public class LicFileActions extends Action {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			logger.info("licfile as json string: " + licfilejson);
+			logger.debug("licfile as json string: " + licfilejson);
 			//PGP enrypt
-			/*PGPEncrypt pgpEncrypt = new PGPEncrypt();
-			pgpEncrypt.setPassphrase("testpass");*/
+			String encyptedLicFileJson = new String(PGPProcessor.encryptByteArray(licfilejson.getBytes()));
+
+			if(encyptedLicFileJson!=null)logger.debug("pgp encrypted licfile as json string: " + encyptedLicFileJson);
 			
-			String encyptedLicFileJson = null;
-			/*try {
-				encyptedLicFileJson = new String(pgpEncrypt.encrypt(licfilejson.getBytes()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}*/
-			
-			if(encyptedLicFileJson!=null)logger.info("pgp encrypted licfile as json string: " + encyptedLicFileJson);
 			super.getStompHandler().send(null, null, (encyptedLicFileJson!=null? encyptedLicFileJson:licfilejson), 15);
 		} else {
 			logger.error("Web Socket Session Closed - dropping operation run.");

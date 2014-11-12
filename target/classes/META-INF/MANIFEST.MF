@@ -1,7 +1,5 @@
 Manifest-Version: 1.0
-Build-Jdk: 1.7.0_67
 Built-By: Owner
-Premain-Class: com.groupfio.agent.AgentPremain
+Build-Jdk: 1.7.0_67
 Created-By: Maven Integration for Eclipse
-Main-Class: NotSuitableAsMain
 

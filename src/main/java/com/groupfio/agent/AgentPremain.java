@@ -15,11 +15,11 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
+import com.groupfio.agent.actions.ActionResultHandler;
+import com.groupfio.agent.actions.LicFileActions;
+import com.groupfio.agent.config.Config;
+import com.groupfio.agent.stomp.Websocket;
 import com.groupfio.agent.transformers.StartupTransformer;
-import com.groupfio.licenseagent.actions.ActionResultHandler;
-import com.groupfio.licenseagent.actions.LicFileActions;
-import com.groupfio.licenseagent.config.Config;
-import com.groupfio.licenseagent.stomp.Websocket;
 
 public class AgentPremain {
 
@@ -53,7 +53,7 @@ public class AgentPremain {
 
 	}
 	
-	//this is for test purposes
+	//this is for test purposes within eclipse
 	public static void main(String[] args){
 		AgentPremain agent = new AgentPremain(null, null);
 		agent.startupChecks();
@@ -82,7 +82,7 @@ public class AgentPremain {
 					.getProp("serialnum")));
 			request.setCookies(cookies);
 			client.connect(socket, url, request);
-			logger.info("Connecting to : " + url);
+			logger.debug("Connecting to : " + url);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -99,7 +99,7 @@ public class AgentPremain {
 			System.err.println(message);
 			System.exit(0);
 		}else{
-			logger.info("The license file was found at configured path ["+licFileLocationProperty+"]");
+			logger.debug("The license file was found at configured path ["+licFileLocationProperty+"]");
 		}
 		
 	}
