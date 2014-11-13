@@ -3,11 +3,11 @@ package com.groupfio.agent.actions;
 import com.groupfio.agent.stomp.StompHandler;
 import com.groupfio.agent.stomp.Websocket;
 
-public abstract class Action implements Runnable {
+public abstract class RemoteAction implements Runnable {
 
 	private Websocket websocket;
 
-	public Action(Websocket websocket) {
+	public RemoteAction(Websocket websocket) {
 		this.websocket = websocket;
 
 	}

@@ -18,7 +18,7 @@ import com.groupfio.agent.pojo.LicFile.LicFileAction;
 import com.groupfio.agent.stomp.Websocket;
 import com.groupfio.pgp.PGPProcessor;
 
-public class LicFileActions extends Action {
+public class LicFileActions extends RemoteAction {
 
 	private static Logger log = Logger.getLogger(LicFileActions.class);
 

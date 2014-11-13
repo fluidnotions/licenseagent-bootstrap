@@ -15,6 +15,9 @@ public class ValidationState {
 	private boolean hasConnectionToServer = false;
 	
 	public ValidationState() {
+		if(Config.getProp("validation.state.shouldShutdown").equalsIgnoreCase("true")){
+			shouldShutdown = true;
+		}
 		hasConnectionToServerShutdownTimer();
 	}
 	
@@ -43,8 +46,7 @@ public class ValidationState {
 	      timer.schedule(task, milli);
 	}
 
-	public boolean isShouldShutdown() {
-		
+	public synchronized boolean isShouldShutdown() {
 		return shouldShutdown;
 	}
 
@@ -64,6 +66,8 @@ public class ValidationState {
 		}
 		this.hasConnectionToServer = hasConnectionToServer;
 	}
+	
+	
 	
 	
 

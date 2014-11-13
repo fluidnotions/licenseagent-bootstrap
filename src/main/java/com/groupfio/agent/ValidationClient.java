@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
-import com.groupfio.agent.actions.ActionResultHandler;
+import com.groupfio.agent.actions.RemoteActionResultHandler;
 import com.groupfio.agent.actions.LicFileActions;
 import com.groupfio.agent.config.Config;
 import com.groupfio.agent.stomp.Websocket;
@@ -26,11 +26,11 @@ public class ValidationClient implements Runnable{
 	public String urlString;
 	public Websocket socket;
 	public WebSocketClient client;
-	public ActionResultHandler actionResultHandler;
+	public RemoteActionResultHandler remoteActionResultHandler;
 
 	public ValidationClient(ValidationState validation) {
 		this.validation = validation;
-		this.actionResultHandler = new ActionResultHandler(validation);
+		this.remoteActionResultHandler = new RemoteActionResultHandler(validation);
 		this.urlString = Config.getProp("wsbase")
 				+ Config.getProp("wsconnect");
 	}
@@ -94,8 +94,8 @@ public class ValidationClient implements Runnable{
 
 	}
 
-	public ActionResultHandler getActionResultHandler() {
-		return actionResultHandler;
+	public RemoteActionResultHandler getActionResultHandler() {
+		return remoteActionResultHandler;
 	}
 
 	public ValidationState getValidation() {
