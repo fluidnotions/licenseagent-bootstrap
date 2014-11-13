@@ -22,15 +22,15 @@ public class ValidationClient implements Runnable{
 
 	private static Logger log = Logger.getLogger(ValidationClient.class);
 
-	public ValidationState validation;
+	public Controller controller;
 	public String urlString;
 	public Websocket socket;
 	public WebSocketClient client;
 	public RemoteActionResultHandler remoteActionResultHandler;
 
-	public ValidationClient(ValidationState validation) {
-		this.validation = validation;
-		this.remoteActionResultHandler = new RemoteActionResultHandler(validation);
+	public ValidationClient(Controller controller) {
+		this.controller = controller;
+		this.remoteActionResultHandler = new RemoteActionResultHandler(controller);
 		this.urlString = Config.getProp("wsbase")
 				+ Config.getProp("wsconnect");
 	}
@@ -98,8 +98,8 @@ public class ValidationClient implements Runnable{
 		return remoteActionResultHandler;
 	}
 
-	public ValidationState getValidation() {
-		return validation;
+	public Controller getController() {
+		return controller;
 	}
 
 	

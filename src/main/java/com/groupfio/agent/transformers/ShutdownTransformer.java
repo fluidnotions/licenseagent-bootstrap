@@ -14,15 +14,18 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 
 import com.groupfio.agent.AgentPremain;
-import com.groupfio.agent.ValidationState;
+import com.groupfio.agent.Controller;
 import com.groupfio.agent.config.Config;
 
 public class ShutdownTransformer extends Transformer {
 
 	private static Logger log = Logger.getLogger(ShutdownTransformer.class);
+	private String targetpackage = null;
 
-	public ShutdownTransformer(ValidationState validation) {
-		super(validation);
+	public ShutdownTransformer(Controller controller) {
+		super(controller);
+		targetpackage = Config
+				.getProp("shutdown.target.package.starts.with");
 	}
 
 	@Override
@@ -30,11 +33,10 @@ public class ShutdownTransformer extends Transformer {
 			Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
 			byte[] classfileBuffer) throws IllegalClassFormatException {
 
-		if (super.validation.isShouldShutdown()) {
-			log.debug("validation.isShouldShutdown(): className: " + className);
-			String targetpackage = Config
-					.getProp("shutdown.target.package.starts.with");
-			if (className.startsWith(targetpackage)) {
+		
+		if (className.startsWith(targetpackage)) {
+			log.debug("controller.isShouldShutdown(): className: " + className);
+			if (super.controller.isShouldShutdown()) {
 				try {
 					String normalizedClassName = className.replaceAll("/", ".");
 					CtClass clazz = ClassPool.getDefault().get(
@@ -49,9 +51,6 @@ public class ShutdownTransformer extends Transformer {
 						| IOException e) {
 					e.printStackTrace();
 				}
-			} else {
-				log.debug(className + " DOESN'T start with " + targetpackage
-						+ "|");
 			}
 		}
 		return classfileBuffer;

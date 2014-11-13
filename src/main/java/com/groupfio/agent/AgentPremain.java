@@ -14,12 +14,12 @@ public class AgentPremain {
 
 	private static Logger log = Logger.getLogger(AgentPremain.class);
 
-	private ValidationState validation;
+	private Controller controller;
 	private String agentArguments;
 	private Instrumentation instrumentation;
 
 	public AgentPremain(String agentArguments, Instrumentation instrumentation) {
-		this.validation = new ValidationState();
+		this.controller = new Controller();
 		this.agentArguments = agentArguments;
 		this.instrumentation = instrumentation;
 
@@ -39,16 +39,17 @@ public class AgentPremain {
 
 	private void startValidationClient() {
 		// start up the Validation client in it's own thread
-		ValidationClient vc = new ValidationClient(validation);
+		ValidationClient vc = new ValidationClient(controller);
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		executor.execute(vc);
 	}
 
 	private void setUpTransformers() {
-		ClassFileTransformer trans1 = new StartupTransformer(validation);
+		ClassFileTransformer trans1 = new StartupTransformer(controller);
 		instrumentation.addTransformer(trans1);
-		ClassFileTransformer trans2 = new ShutdownTransformer(validation);
-		instrumentation.addTransformer(trans2);
+		//this method doesn't work and is unnecessary for the shutdown operation
+		//ClassFileTransformer trans2 = new ShutdownTransformer(controller);
+		//instrumentation.addTransformer(trans2);
 	}
 
 	// this is for test purposes within eclipse

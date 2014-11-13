@@ -26,14 +26,14 @@ public class Websocket {
 
 	static Logger log = Logger.getLogger(Websocket.class);
 
-	private ValidationClient validationClient;
+	private ValidationClient client;
 	private Session session;
 	private final CountDownLatch closeLatch;
 	private StompHandler stompHandler;
 
-	public Websocket(ValidationClient validationClient) {
+	public Websocket(ValidationClient client) {
 		this.closeLatch = new CountDownLatch(1);
-		this.validationClient = validationClient;
+		this.client = client;
 
 	}
 
@@ -47,10 +47,14 @@ public class Websocket {
 		log.debug("Connection closed: " + statusCode + " - " + reason);
 		this.session = null;
 		this.closeLatch.countDown();
-		//this setter also restarts the timer
-		validationClient.getValidation().setHasConnectionToServer(false);
-		log.debug("attempting auto reconnect ...");
-		this.validationClient.startWebsocketConnection();
+		if(!client.getController().isShouldShutdown()){
+			//this setter also restarts the timer
+			client.getController().setHasConnectionToServer(false);
+			log.debug("attempting auto reconnect ...");
+			this.client.startWebsocketConnection();
+		}else{
+			log.debug("not attempting auto reconnect, because controller should shutdown is set to true");
+		}
 	}
 
 	// session.close(StatusCode.NORMAL, "I'm done");
@@ -77,15 +81,15 @@ public class Websocket {
 		// log.debug("raw msg: "+msg);
 		if (StompHandler.COMMAND_CONNECTED.equals(f.getCommand())) {
 			log.debug("CONNECTED");
-			//set in ValidationState
-			validationClient.getValidation().setHasConnectionToServer(true);
+			//set in Controller
+			client.getController().setHasConnectionToServer(true);
 			// once connected
 			// Subscribe to user results
 			subscribe(Config.getProp("stdwssub"));
 			// Subscribe to user errors
 			subscribe(Config.getProp("errwssub"));
 			// start running scheduled operations
-			this.validationClient.runPeriodicOperations();
+			this.client.runPeriodicOperations();
 		} else if (StompHandler.COMMAND_MESSAGE.equals(f.getCommand())) {
 			log.debug("MESSAGE RECIEVED:");
 			log.debug("headers:");
@@ -112,7 +116,7 @@ public class Websocket {
 				}
 				// log.debug("result.toString(): "+result.toString());
 				// handle result
-				validationClient.getActionResultHandler().handleResponse(result);
+				client.getActionResultHandler().handleResponse(result);
 			}else{
 				log.error(f.getBody());
 			}

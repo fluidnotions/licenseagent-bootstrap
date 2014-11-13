@@ -4,15 +4,15 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 
-import com.groupfio.agent.ValidationState;
+import com.groupfio.agent.Controller;
 
 public abstract class Transformer implements ClassFileTransformer {
 
-	ValidationState validation;
+	Controller controller;
 	
-	public Transformer(ValidationState validation) {
+	public Transformer(Controller controller) {
 		super();
-		this.validation = validation;
+		this.controller = controller;
 	}
 
 	public abstract byte[] transform(ClassLoader arg0, String arg1, Class<?> arg2,

@@ -12,15 +12,15 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
-import com.groupfio.agent.ValidationState;
+import com.groupfio.agent.Controller;
 import com.groupfio.agent.config.Config;
 
 public class StartupTransformer extends Transformer {
 	
 	private static Logger log = Logger.getLogger(StartupTransformer.class);
 	
-	public StartupTransformer(ValidationState validation) {
-		super(validation);
+	public StartupTransformer(Controller controller) {
+		super(controller);
 	}
 
 	public byte[] transform(ClassLoader loader, String className,

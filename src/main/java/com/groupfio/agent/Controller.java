@@ -7,17 +7,14 @@ import org.apache.log4j.Logger;
 
 import com.groupfio.agent.config.Config;
 
-public class ValidationState {
+public class Controller {
 	
-	private static Logger log = Logger.getLogger(ValidationState.class);
+	private static Logger log = Logger.getLogger(Controller.class);
 	
-	private boolean shouldShutdown = false;
 	private boolean hasConnectionToServer = false;
+	private boolean shouldShutdown = false;
 	
-	public ValidationState() {
-		if(Config.getProp("validation.state.shouldShutdown").equalsIgnoreCase("true")){
-			shouldShutdown = true;
-		}
+	public Controller() {
 		hasConnectionToServerShutdownTimer();
 	}
 	
@@ -30,7 +27,7 @@ public class ValidationState {
 			public void run() {
 				if(!hasConnectionToServer){
 					log.debug("hasConnectionToServer is still false after "+timeoutseconds+" seconds since startup/disconnect");
-					setShouldShutdown(true);
+					shutdown();
 				}else{
 					log.debug(timeoutseconds+" seconds since startup/disconnect ... hasConnectionToServer is now: "+hasConnectionToServer);
 				}
@@ -46,13 +43,13 @@ public class ValidationState {
 	      timer.schedule(task, milli);
 	}
 
-	public synchronized boolean isShouldShutdown() {
-		return shouldShutdown;
-	}
+	
 
-	public void setShouldShutdown(boolean shouldShutdown) {
-		log.debug("setShouldShutdown: "+shouldShutdown);
-		this.shouldShutdown = shouldShutdown;
+	public void shutdown() {
+		setShouldShutdown(true);
+		log.debug("Shutdown called the syetem will now exit...");
+		System.exit(0);
+		
 	}
 
 	public boolean isHasConnectionToServer() {
@@ -65,6 +62,14 @@ public class ValidationState {
 			hasConnectionToServerShutdownTimer();
 		}
 		this.hasConnectionToServer = hasConnectionToServer;
+	}
+
+	public boolean isShouldShutdown() {
+		return shouldShutdown;
+	}
+
+	public void setShouldShutdown(boolean shouldShutdown) {
+		this.shouldShutdown = shouldShutdown;
 	}
 	
 	
