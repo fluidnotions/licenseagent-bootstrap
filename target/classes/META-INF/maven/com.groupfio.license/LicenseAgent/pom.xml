@@ -9,6 +9,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jdk.version>1.7</jdk.version>
 	</properties>
 
 	<dependencies>
@@ -59,21 +60,38 @@
 	
 	<build>
         <plugins>
+            <!-- Set a compiler level -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>1.7.1</version>
                 <configuration>
                     <filters>
+						<filter>
+						   <artifact>log4j:log4j</artifact>
+						   <includes>
+							   <include>**</include>
+						   </includes>
+						</filter> 
                         <filter>
                             <artifact>*:*</artifact>
-                            <includes>
-                                <include>com/groupfio/agent/**</include>
-                                <include>META-INF/MANIFEST.MF</include>
-                            </includes>
+                            <excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
                         </filter>
                     </filters>
-                    <minimizeJar>true</minimizeJar>
+                    <minimizeJar>false</minimizeJar>
                     <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                           <manifestEntries>

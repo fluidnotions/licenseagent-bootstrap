@@ -20,7 +20,7 @@ import com.groupfio.pgp.PGPProcessor;
 
 public class LicFileActions extends Action {
 
-	private static Logger logger = Logger.getLogger(LicFileActions.class);
+	private static Logger log = Logger.getLogger(LicFileActions.class);
 
 	public LicFileActions(Websocket websocket) {
 		super(websocket);
@@ -28,7 +28,7 @@ public class LicFileActions extends Action {
 
 	public void run() {
 		if (super.isWebSocketSessionOpen()) {
-			logger.debug("LicFileActions running at " + (new Date().toString()));
+			log.debug("LicFileActions running at " + (new Date().toString()));
 			// send Test LicFile Object Message
 			LicFile lf = new LicFile();
 			lf.setAction(LicFileAction.ChecksumAndFileSize);
@@ -50,7 +50,7 @@ public class LicFileActions extends Action {
 			
 			super.getStompHandler().send(null, null, licfilejson, 15, true);
 		} else {
-			logger.error("Web Socket Session Closed - dropping operation run.");
+			log.error("Web Socket Session Closed - dropping operation run.");
 		}
 	}
 	

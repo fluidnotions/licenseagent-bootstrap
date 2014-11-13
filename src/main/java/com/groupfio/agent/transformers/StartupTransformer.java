@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 
+import org.apache.log4j.Logger;
+
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -14,6 +16,8 @@ import com.groupfio.agent.ValidationState;
 import com.groupfio.agent.config.Config;
 
 public class StartupTransformer extends Transformer {
+	
+	private static Logger log = Logger.getLogger(StartupTransformer.class);
 	
 	public StartupTransformer(ValidationState validation) {
 		super(validation);

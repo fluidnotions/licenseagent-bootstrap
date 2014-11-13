@@ -17,7 +17,7 @@ public class Frame {
 	private Map<String, String> headers;
 	private String body;
 
-	private static Logger logger = Logger.getLogger(Frame.class);
+	private static Logger log = Logger.getLogger(Frame.class);
 
 	/**
 	 * Constructor of a Frame object. All parameters of a frame can be

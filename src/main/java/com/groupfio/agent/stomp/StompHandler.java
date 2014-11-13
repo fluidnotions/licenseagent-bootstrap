@@ -14,7 +14,7 @@ import com.groupfio.agent.config.Config;
 
 public class StompHandler {
 
-	static Logger logger = Logger.getLogger(StompHandler.class);
+	static Logger log = Logger.getLogger(StompHandler.class);
 
 	private final Session websocketSession;
 	private HashMap<String, Subscription> subscriptions;
@@ -39,14 +39,14 @@ public class StompHandler {
 				&& !headers.containsKey(StompHandler.CONTENT_LENGTH_NAME)) {
 			String bodylen = (new Integer(body.length())).toString();
 			headers.put(StompHandler.CONTENT_LENGTH_NAME, bodylen);
-			logger.debug(StompHandler.CONTENT_LENGTH_NAME + " of " + bodylen
+			log.debug(StompHandler.CONTENT_LENGTH_NAME + " of " + bodylen
 					+ " added to headers");
 		}
 		try {
 			Future<Void> fut = this.websocketSession.getRemote()
 					.sendStringByFuture(out);
 			fut.get(secdelay, TimeUnit.SECONDS);
-			logger.debug(out);
+			log.debug(out);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {

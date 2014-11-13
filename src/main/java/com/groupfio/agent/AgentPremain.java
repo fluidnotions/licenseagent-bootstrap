@@ -19,6 +19,7 @@ import com.groupfio.agent.actions.ActionResultHandler;
 import com.groupfio.agent.actions.LicFileActions;
 import com.groupfio.agent.config.Config;
 import com.groupfio.agent.stomp.Websocket;
+import com.groupfio.agent.transformers.ShutdownTransformer;
 import com.groupfio.agent.transformers.StartupTransformer;
 
 public class AgentPremain {
@@ -27,7 +28,7 @@ public class AgentPremain {
 	private String agentArguments;
 	private Instrumentation instrumentation;
 	
-	private static Logger logger = Logger.getLogger(AgentPremain.class);
+	private static Logger log = Logger.getLogger(AgentPremain.class);
 	private String urlString;
 	private Websocket socket;
 	private WebSocketClient client;
@@ -63,7 +64,7 @@ public class AgentPremain {
 	private void setUpTransformers() {
 		ClassFileTransformer trans1 = new StartupTransformer(validation);
 		instrumentation.addTransformer(trans1);
-		ClassFileTransformer trans2 = new StartupTransformer(validation);
+		ClassFileTransformer trans2 = new ShutdownTransformer(validation);
 		instrumentation.addTransformer(trans2);
 	}
 	
@@ -82,7 +83,7 @@ public class AgentPremain {
 					.getProp("serialnum")));
 			request.setCookies(cookies);
 			client.connect(socket, url, request);
-			logger.debug("Connecting to : " + url);
+			log.debug("Connecting to : " + url);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -95,11 +96,11 @@ public class AgentPremain {
 		File licFile = new File(licFileLocationProperty);
 		if(!licFile.exists()){
 			String message = "The license file was not found at configured path ["+licFileLocationProperty+"] Shutting down...";
-			logger.fatal(message);
+			log.fatal(message);
 			System.err.println(message);
 			System.exit(0);
 		}else{
-			logger.debug("The license file was found at configured path ["+licFileLocationProperty+"]");
+			log.debug("The license file was found at configured path ["+licFileLocationProperty+"]");
 		}
 		
 	}
@@ -120,5 +121,9 @@ public class AgentPremain {
 
 	public ActionResultHandler getActionResultHandler() {
 		return actionResultHandler;
+	}
+
+	public ValidationState getValidation() {
+		return validation;
 	}
 }
