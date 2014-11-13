@@ -26,7 +26,7 @@ public class ActionResultHandler {
 			if(LicFile.VPASS.equals(actionResult.getActionResultMsg())){
 				validation.setShouldShutdown(false);
 			}else if(LicFile.VFAIL.equals(actionResult.getActionResultMsg())){
-				log.debug(LicFile.VFAIL+" setting state to shitdown");
+				log.debug(LicFile.VFAIL+" setting state to shutdown");
 				 validation.setShouldShutdown(true);
 			}
 			break;

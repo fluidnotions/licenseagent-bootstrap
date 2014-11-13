@@ -44,6 +44,7 @@ public class ValidationState {
 	}
 
 	public boolean isShouldShutdown() {
+		
 		return shouldShutdown;
 	}
 

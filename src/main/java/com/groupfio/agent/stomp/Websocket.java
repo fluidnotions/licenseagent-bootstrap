@@ -17,6 +17,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import com.groupfio.agent.AgentPremain;
+import com.groupfio.agent.ValidationClient;
 import com.groupfio.agent.config.Config;
 import com.groupfio.agent.pojo.ActionResult;
 
@@ -25,14 +26,14 @@ public class Websocket {
 
 	static Logger log = Logger.getLogger(Websocket.class);
 
-	private AgentPremain agentPremain;
+	private ValidationClient validationClient;
 	private Session session;
 	private final CountDownLatch closeLatch;
 	private StompHandler stompHandler;
 
-	public Websocket(AgentPremain agentPremain) {
+	public Websocket(ValidationClient validationClient) {
 		this.closeLatch = new CountDownLatch(1);
-		this.agentPremain = agentPremain;
+		this.validationClient = validationClient;
 
 	}
 
@@ -47,9 +48,9 @@ public class Websocket {
 		this.session = null;
 		this.closeLatch.countDown();
 		//this setter also restarts the timer
-		agentPremain.getValidation().setHasConnectionToServer(false);
+		validationClient.getValidation().setHasConnectionToServer(false);
 		log.debug("attempting auto reconnect ...");
-		this.agentPremain.startWebsocketConnection();
+		this.validationClient.startWebsocketConnection();
 	}
 
 	// session.close(StatusCode.NORMAL, "I'm done");
@@ -77,14 +78,14 @@ public class Websocket {
 		if (StompHandler.COMMAND_CONNECTED.equals(f.getCommand())) {
 			log.debug("CONNECTED");
 			//set in ValidationState
-			agentPremain.getValidation().setHasConnectionToServer(true);
+			validationClient.getValidation().setHasConnectionToServer(true);
 			// once connected
 			// Subscribe to user results
 			subscribe(Config.getProp("stdwssub"));
 			// Subscribe to user errors
 			subscribe(Config.getProp("errwssub"));
 			// start running scheduled operations
-			this.agentPremain.runPeriodicOperations();
+			this.validationClient.runPeriodicOperations();
 		} else if (StompHandler.COMMAND_MESSAGE.equals(f.getCommand())) {
 			log.debug("MESSAGE RECIEVED:");
 			log.debug("headers:");
@@ -111,7 +112,7 @@ public class Websocket {
 				}
 				// log.debug("result.toString(): "+result.toString());
 				// handle result
-				agentPremain.getActionResultHandler().handleResponse(result);
+				validationClient.getActionResultHandler().handleResponse(result);
 			}else{
 				log.error(f.getBody());
 			}
