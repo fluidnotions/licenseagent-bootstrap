@@ -19,7 +19,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import com.groupfio.agent.AgentPremain;
 import com.groupfio.agent.ValidationClient;
 import com.groupfio.agent.config.Config;
-import com.groupfio.agent.pojo.ActionResult;
+import com.groupfio.message.pojo.Message;
 
 @WebSocket(maxTextMessageSize = 64 * 1024)
 public class Websocket {
@@ -103,10 +103,10 @@ public class Websocket {
 			//we do not want to attempt to map these to an object so check header
 			if (!f.getHeaders().get("content-type").equals("text/plain;charset=UTF-8")) {
 				
-				ActionResult result = null;
+				Message result = null;
 				try {
 					result = new ObjectMapper().readValue(f.getBody().trim(),
-							ActionResult.class);
+							Message.class);
 				} catch (JsonParseException e) {
 					e.printStackTrace();
 				} catch (JsonMappingException e) {

@@ -6,15 +6,15 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
-import com.groupfio.agent.actions.RemoteActionResultHandler;
-import com.groupfio.agent.actions.LicFileActions;
+import com.groupfio.agent.actions.RemoteActionHandler;
+import com.groupfio.agent.actions.checks.CheckIsEnabled;
+import com.groupfio.agent.actions.checks.CheckLicFile;
 import com.groupfio.agent.config.Config;
 import com.groupfio.agent.stomp.Websocket;
 
@@ -26,11 +26,11 @@ public class ValidationClient implements Runnable{
 	public String urlString;
 	public Websocket socket;
 	public WebSocketClient client;
-	public RemoteActionResultHandler remoteActionResultHandler;
+	public RemoteActionHandler remoteActionResultHandler;
 
 	public ValidationClient(Controller controller) {
 		this.controller = controller;
-		this.remoteActionResultHandler = new RemoteActionResultHandler(controller);
+		this.remoteActionResultHandler = new RemoteActionHandler(controller);
 		this.urlString = Config.getProp("wsbase")
 				+ Config.getProp("wsconnect");
 	}
@@ -83,18 +83,21 @@ public class ValidationClient implements Runnable{
 
 		String fixeddelay = Config.getProp("fixedelay");
 
-		ScheduledExecutorService scheduledExecutorService = Executors
-				.newScheduledThreadPool(5);
+		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
+		
+		
+		//run check is enabled first & just once on startup
+		CheckIsEnabled cie = new CheckIsEnabled(socket);
+		Executors.callable(cie);
 
 		// run lic file operation every 5 sec
-		LicFileActions lfo = new LicFileActions(socket);
-		ScheduledFuture scheduledFuture = scheduledExecutorService
-				.scheduleWithFixedDelay(lfo, 5, (new Integer(fixeddelay)),
+		CheckLicFile lfo = new CheckLicFile(socket);
+		scheduledExecutorService.scheduleWithFixedDelay(lfo, 5, (new Integer(fixeddelay)),
 						TimeUnit.SECONDS);
 
 	}
 
-	public RemoteActionResultHandler getActionResultHandler() {
+	public RemoteActionHandler getActionResultHandler() {
 		return remoteActionResultHandler;
 	}
 

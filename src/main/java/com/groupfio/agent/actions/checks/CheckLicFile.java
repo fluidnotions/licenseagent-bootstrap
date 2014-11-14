@@ -1,66 +1,56 @@
-package com.groupfio.agent.actions;
+package com.groupfio.agent.actions.checks;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
+import com.groupfio.agent.actions.RemoteAction;
 import com.groupfio.agent.config.Config;
-import com.groupfio.agent.pojo.LicFile;
-import com.groupfio.agent.pojo.LicFile.LicFileAction;
 import com.groupfio.agent.stomp.Websocket;
-import com.groupfio.pgp.PGPProcessor;
+import com.groupfio.message.pojo.ActionMessageConstants;
+import com.groupfio.message.pojo.LicFileMessage;
+import com.groupfio.message.pojo.Message.Origin;
 
-public class LicFileActions extends RemoteAction {
+public class CheckLicFile extends RemoteAction {
 
-	private static Logger log = Logger.getLogger(LicFileActions.class);
+	private static Logger log = Logger.getLogger(CheckLicFile.class);
 
-	public LicFileActions(Websocket websocket) {
+	public CheckLicFile(Websocket websocket) {
 		super(websocket);
 	}
 
 	public void run() {
 		if (super.isWebSocketSessionOpen()) {
-			log.debug("LicFileActions running at " + (new Date().toString()));
-			// send Test LicFile Object Message
-			LicFile lf = new LicFile();
-			lf.setAction(LicFileAction.ChecksumAndFileSize);
+			log.debug("CheckLicFile running at " + (new Date().toString()));
+			// send Test LicFileMessage Object Message
+			LicFileMessage lf = new LicFileMessage();
+			lf.setAction(ActionMessageConstants.LIC_FILE_ACTION_MSG);
+			lf.setOrigin(Origin.CLIENT);
 			/*lf.setLicfileByteSize(1000000);
 			lf.setLicfileCheckSum("aaaaaa");*/
 			doLicFileChecksum(lf);
 			doLicFileSize(lf);
 			
-			String licfilejson = null;
-			try {
-				licfilejson = new ObjectMapper().writeValueAsString(lf);
-			} catch (JsonGenerationException e) {
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			super.getStompHandler().send(null, null, licfilejson, 15, true);
+			send(lf, ActionMessageConstants.LIC_FILE_ACTION_DESTINATION);
 		} else {
 			log.error("Web Socket Session Closed - dropping operation run.");
 		}
+		
 	}
+
 	
-	private void doLicFileSize(LicFile lf){
+	
+	private void doLicFileSize(LicFileMessage lf){
 		//TODO change db table data type to big int and map
 		int size = (int)(new File(Config.getProp("licfile")).length());
 		lf.setLicfileByteSize(size);
 	}
 	
-	private void doLicFileChecksum(LicFile lf){
+	private void doLicFileChecksum(LicFileMessage lf){
 		try {
 			lf.setLicfileCheckSum(MD5Checksum.getMD5Checksum(Config.getProp("licfile")));
 		} catch (Exception e) {
