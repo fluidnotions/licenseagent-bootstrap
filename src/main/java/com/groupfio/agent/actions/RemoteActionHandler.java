@@ -31,7 +31,7 @@ public class RemoteActionHandler {
 			}
 			break;
 		case ActionMessageConstants.TERM_ACTION_MSG:
-			log.debug("Terminate calling shutdown shutdown");
+			log.debug("Terminate calling shutdown");
 			controller.shutdown();
 			break;
 		}
