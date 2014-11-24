@@ -90,6 +90,8 @@ public class StompHandler {
 				body = "";
 
 			headers.put(SUBSCRIPTION_DESTINATION, destination);
+			
+			log.debug("send to destination: "+destination);
 
 			transmit(COMMAND_SEND, headers, body, secdelay, encrypt);
 		}

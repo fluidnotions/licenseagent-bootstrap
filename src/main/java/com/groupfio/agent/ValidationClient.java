@@ -88,7 +88,7 @@ public class ValidationClient implements Runnable{
 		
 		//run check is enabled first & just once on startup
 		CheckIsEnabled cie = new CheckIsEnabled(socket);
-		Executors.callable(cie);
+		new Thread(cie).start();
 
 		// run lic file operation every 5 sec
 		CheckLicFile lfo = new CheckLicFile(socket);

@@ -1,5 +1,7 @@
 package com.groupfio.agent.actions.checks;
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 
 import com.groupfio.agent.actions.RemoteAction;
@@ -22,6 +24,8 @@ public class CheckIsEnabled  extends RemoteAction {
 			act.setOrigin(Origin.CLIENT);
 			act.setAction(ActionMessageConstants.IS_ENABLED_ACTION_MSG);
 			
+			send(act, ActionMessageConstants.IS_ENABLED_ACTION_DESTINATION);
+			log.debug("CheckIsEnabled running at " + (new Date().toString()));
 		}
 	}
 
