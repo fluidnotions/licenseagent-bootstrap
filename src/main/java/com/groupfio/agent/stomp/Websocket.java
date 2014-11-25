@@ -97,6 +97,14 @@ public class Websocket {
 				log.debug(header.getKey() + " -> " + header.getValue());
 
 			}
+			
+			//shutdown on error - know error is serialnumber=? not found in database!
+			if(f.getHeaders().get("destination").equals("/user/queue/errors")){
+				log.fatal("Error recieved from server. The system will now exit! error: "+f.getBody());
+				System.exit(0);
+				
+			}
+			
 			log.debug("body:");
 			log.debug(f.getBody());
 			//actually errors from the server are received as text/plain;charset=UTF-8
