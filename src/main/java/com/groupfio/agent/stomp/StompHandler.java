@@ -79,7 +79,7 @@ public class StompHandler {
 	 *            body of a message
 	 */
 	public void send(String destination, Map<String, String> headers,
-			String body, int secdelay, boolean encrypt) {
+			String body, int secdelay) {
 		if (this.websocketSession.isOpen()) {
 			if (headers == null)
 				headers = new HashMap<String, String>();
@@ -93,7 +93,7 @@ public class StompHandler {
 			
 			log.debug("send to destination: "+destination);
 
-			transmit(COMMAND_SEND, headers, body, secdelay, encrypt);
+			transmit(COMMAND_SEND, headers, body, secdelay, Config.getProp("pgp").equals("true"));
 		}
 	}
 

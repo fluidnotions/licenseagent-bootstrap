@@ -38,7 +38,7 @@ public abstract class RemoteAction implements Runnable {
 			e.printStackTrace();
 		}
 		
-		getStompHandler().send(destination, null, json, 15, true);
+		getStompHandler().send(destination, null, json, 15);
 	}
 
 	public abstract void run();

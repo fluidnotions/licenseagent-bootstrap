@@ -109,10 +109,14 @@ public class Websocket {
 			
 			log.debug("body:");
 			log.debug(f.getBody());
-			
-			String decryptedBody = new String(PGPProcessor.decryptByteArray(f.getBody().getBytes()));
-			log.debug("decryptedBody:");
-			log.debug(decryptedBody);
+			String decryptedBody = null;
+			if(Config.getProp("pgp").equals("true")){
+				decryptedBody = new String(PGPProcessor.decryptByteArray(f.getBody().getBytes()));
+				log.debug("decryptedBody:");
+				log.debug(decryptedBody);
+			}else{
+				decryptedBody = f.getBody();
+			}
 			//actually errors from the server are received as text/plain;charset=UTF-8
 			//we do not want to attempt to map these to an object so check header
 			if (!f.getHeaders().get("content-type").equals("text/plain;charset=UTF-8")) {
