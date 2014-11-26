@@ -16,7 +16,7 @@ public class WebsocketClientLoadTest {
 		String numberOfClients = null;
 		if (args.length == 0) {
 			log.info("Single arg indicates the numberOfClients you wish to test with ... none provided - using default 3");
-			numberOfClients = "3";
+			numberOfClients = "1";
 		}else{
 			numberOfClients = args[0];
 			log.info("Single arg numberOfClients you wish to test with ... set to: "+numberOfClients);

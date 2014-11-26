@@ -20,6 +20,7 @@ import com.groupfio.agent.AgentPremain;
 import com.groupfio.agent.ValidationClient;
 import com.groupfio.agent.config.Config;
 import com.groupfio.message.pojo.Message;
+import com.groupfio.pgp.PGPProcessor;
 
 @WebSocket(maxTextMessageSize = 64 * 1024)
 public class Websocket {
@@ -77,6 +78,7 @@ public class Websocket {
 
 	@OnWebSocketMessage
 	public void onMessage(String msg) {
+		
 		Frame f = Frame.fromString(msg);
 		// log.debug("raw msg: "+msg);
 		if (StompHandler.COMMAND_CONNECTED.equals(f.getCommand())) {
@@ -107,13 +109,17 @@ public class Websocket {
 			
 			log.debug("body:");
 			log.debug(f.getBody());
+			
+			String decryptedBody = new String(PGPProcessor.decryptByteArray(f.getBody().getBytes()));
+			log.debug("decryptedBody:");
+			log.debug(decryptedBody);
 			//actually errors from the server are received as text/plain;charset=UTF-8
 			//we do not want to attempt to map these to an object so check header
 			if (!f.getHeaders().get("content-type").equals("text/plain;charset=UTF-8")) {
 				
 				Message result = null;
 				try {
-					result = new ObjectMapper().readValue(f.getBody().trim(),
+					result = new ObjectMapper().readValue(decryptedBody.trim(),
 							Message.class);
 				} catch (JsonParseException e) {
 					e.printStackTrace();
