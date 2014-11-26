@@ -36,6 +36,7 @@ public class AgentPremain {
 		agent.startValidationClient();
 
 	}
+	
 
 	private void startValidationClient() {
 		// start up the Validation client in it's own thread
@@ -55,8 +56,6 @@ public class AgentPremain {
 	// this is for test purposes within eclipse
 	public static void main(String[] args) {
 		AgentPremain agent = new AgentPremain(null, null);
-		//instrumentation is null in this case
-		//agent.setUpTransformers();
 		agent.startValidationClient();
 	}
 

@@ -28,6 +28,14 @@ public class ValidationClient implements Runnable{
 	public WebSocketClient client;
 	public RemoteActionHandler remoteActionResultHandler;
 
+	private String loadTestSerialNumber;
+
+	public ValidationClient(Controller controller, String loadTestSerialNumber) {
+		this(controller);
+		this.loadTestSerialNumber = loadTestSerialNumber;
+		log.debug("loadTestSerialNumber: "+loadTestSerialNumber);
+	}
+	
 	public ValidationClient(Controller controller) {
 		this.controller = controller;
 		this.remoteActionResultHandler = new RemoteActionHandler(controller);
@@ -52,7 +60,7 @@ public class ValidationClient implements Runnable{
 			ClientUpgradeRequest request = new ClientUpgradeRequest();
 			// set serialnum cookie to be used as
 			ArrayList<HttpCookie> cookies = new ArrayList<HttpCookie>();
-			cookies.add(new HttpCookie("user", Config.getProp("serialnum")));
+			cookies.add(new HttpCookie("user", loadTestSerialNumber==null?Config.getProp("serialnum"):loadTestSerialNumber));
 			request.setCookies(cookies);
 			client.connect(socket, url, request);
 			log.debug("Connecting to : " + url);
@@ -61,7 +69,7 @@ public class ValidationClient implements Runnable{
 		}
 	}
 
-	private void startupChecks() {
+	public void startupChecks() {
 		// do some basic checks before app starts
 		// check that the lic file is in the expected location
 		String licFileLocationProperty = Config.getProp("licfile");
