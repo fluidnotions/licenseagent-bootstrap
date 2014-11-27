@@ -97,6 +97,7 @@
                           <manifestEntries>
                             <Premain-Class>com.groupfio.agent.AgentPremain</Premain-Class>
                             <Agent-Class>com.groupfio.agent.AgentPremain</Agent-Class>
+                            <!-- <Main-Class>com.groupfio.agent.loadtest.WebsocketClientLoadTest</Main-Class> -->
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
                           </manifestEntries>

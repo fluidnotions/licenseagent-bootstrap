@@ -1,4 +1,4 @@
-package com.groupfio.licenseagent;
+package com.groupfio.agent.loadtest;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,8 +15,8 @@ public class WebsocketClientLoadTest {
 	public static void main(String[] args) {
 		String numberOfClients = null;
 		if (args.length == 0) {
-			log.info("Single arg indicates the numberOfClients you wish to test with ... none provided - using default 25");
-			numberOfClients = "25";
+			log.info("Single arg indicates the numberOfClients you wish to test with ... none provided - using default 35");
+			numberOfClients = "35";
 		}else{
 			numberOfClients = args[0];
 			log.info("Single arg numberOfClients you wish to test with ... set to: "+numberOfClients);
